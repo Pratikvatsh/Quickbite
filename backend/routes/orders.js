@@ -61,6 +61,25 @@ router.get('/my-orders', protect, async (req, res) => {
   } catch (error) { res.status(500).json({ message: error.message }); }
 });
 
+// Dashboard stats (owner)
+router.get('/stats/dashboard', protect, ownerOnly, async (req, res) => {
+  try {
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const [totalOrders, todayOrders, activeOrders, completedOrders] = await Promise.all([
+      Order.countDocuments(),
+      Order.countDocuments({ createdAt: { $gte: startOfDay } }),
+      Order.countDocuments({ status: { $in: ['placed', 'preparing', 'ready'] } }),
+      Order.find({ status: { $in: ['completed', 'ready'] } }, 'totalAmount'),
+    ]);
+
+    const revenue = completedOrders.reduce((sum, o) => sum + o.totalAmount, 0);
+
+    res.json({ stats: { totalOrders, todayOrders, activeOrders, revenue } });
+  } catch (error) { res.status(500).json({ message: error.message }); }
+});
+
 // Get single order
 router.get('/:id', protect, async (req, res) => {
   try {

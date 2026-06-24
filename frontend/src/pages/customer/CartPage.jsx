@@ -28,7 +28,7 @@ export default function CartPage() {
   );
 
   return (
-    <div className="page page-with-nav" style={{ padding: '16px 16px 120px' }}>
+    <div className="page page-with-nav container" style={{ padding: '16px 16px 120px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
         <h2 style={{ fontSize: 22 }}>My Cart <span style={{ color: 'var(--text-muted)', fontSize: 16 }}>({items.length} items)</span></h2>
         <button onClick={async () => { await clearCart(); toast.success('Cart cleared'); }} style={{ background: 'none', border: 'none', color: 'var(--red)', fontSize: 13, fontWeight: 600 }}>Clear all</button>
@@ -98,10 +98,12 @@ export default function CartPage() {
       </div>
 
       {/* Checkout button */}
-      <div style={{ position: 'fixed', bottom: 72, left: 0, right: 0, padding: '12px 16px', background: 'rgba(10,10,15,0.7)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-        <button onClick={() => navigate('/checkout')} className="btn btn-primary btn-lg" style={{ width: '100%' }}>
-          Proceed to Checkout — ₹{cart.totalAmount}
-        </button>
+      <div className="sticky-cta" style={{ padding: '12px 16px', background: 'rgba(10,10,15,0.7)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+        <div className="bar-inner">
+          <button onClick={() => navigate('/checkout')} className="btn btn-primary btn-lg" style={{ width: '100%' }}>
+            Proceed to Checkout — ₹{cart.totalAmount}
+          </button>
+        </div>
       </div>
     </div>
   );

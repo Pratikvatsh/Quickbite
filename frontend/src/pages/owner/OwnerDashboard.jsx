@@ -4,10 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import API from '../../utils/api';
 
 const StatCard = ({ icon, label, value, color, sub }) => (
-  <div style={{
-    background: 'var(--bg-card)', border: '1px solid var(--border)',
-    borderRadius: 16, padding: 18, flex: 1, minWidth: 0
-  }}>
+  <div className="glass-panel" style={{ padding: 18 }}>
     <div style={{ fontSize: 26, marginBottom: 8 }}>{icon}</div>
     <div style={{ fontSize: 28, fontWeight: 900, color: color || 'var(--text-primary)', fontFamily: 'var(--font-display)', letterSpacing: '-1px' }}>{value}</div>
     <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 2 }}>{label}</div>
@@ -27,7 +24,7 @@ export default function OwnerDashboard() {
       try {
         const [statsRes, ordersRes] = await Promise.all([
           API.get('/orders/stats/dashboard'),
-          API.get('/orders/all?status=all')
+          API.get('/orders?status=all')
         ]);
         setStats(statsRes.data.stats);
         setRecentOrders((ordersRes.data.orders || []).slice(0, 5));
@@ -47,42 +44,20 @@ export default function OwnerDashboard() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', paddingBottom: 40 }}>
-      {/* Owner top bar */}
-      <div style={{
-        background: 'rgba(10,10,15,0.95)', backdropFilter: 'blur(20px)',
-        borderBottom: '1px solid var(--border)',
-        padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        position: 'sticky', top: 0, zIndex: 100
-      }}>
-        <div>
-          <h1 style={{ fontSize: 22, fontFamily: 'var(--font-display)' }}>
-            Quick<span style={{ color: 'var(--accent)' }}>Bite</span>
-            <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-muted)', marginLeft: 8 }}>Owner Panel</span>
-          </h1>
-        </div>
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, var(--accent), #ff3d00)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: 15 }}>
-            {user?.name?.charAt(0)}
-          </div>
-          <button onClick={() => { logout(); navigate('/login'); }} style={{ padding: '6px 14px', borderRadius: 8, background: 'var(--red-dim)', color: 'var(--red)', border: '1px solid rgba(239,68,68,0.2)', fontWeight: 600, fontSize: 13 }}>Logout</button>
-        </div>
-      </div>
-
-      <div style={{ padding: '24px 20px' }}>
+    <div className="page page-with-nav container" style={{ paddingLeft: 20, paddingRight: 20 }}>
         {/* Greeting */}
-        <div style={{ marginBottom: 24 }}>
+        <div style={{ marginBottom: 24, marginTop: 8 }}>
           <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>Welcome back 👋</p>
           <h2 style={{ fontSize: 24 }}>{user?.name}</h2>
         </div>
 
         {/* Stats grid */}
         {loading ? (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 28 }}>
+          <div className="auto-grid" style={{ marginBottom: 28 }}>
             {Array(4).fill(0).map((_, i) => <div key={i} className="skeleton" style={{ height: 110, borderRadius: 16 }} />)}
           </div>
         ) : stats && (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 28 }}>
+          <div className="auto-grid" style={{ marginBottom: 28 }}>
             <StatCard icon="📋" label="Total Orders" value={stats.totalOrders} color="var(--blue)" />
             <StatCard icon="🌅" label="Today's Orders" value={stats.todayOrders} color="var(--yellow)" />
             <StatCard icon="🔥" label="Active Orders" value={stats.activeOrders} color="var(--accent)" sub={stats.activeOrders > 0 ? 'Need attention!' : 'All clear ✓'} />
@@ -92,7 +67,7 @@ export default function OwnerDashboard() {
 
         {/* Quick actions */}
         <h3 style={{ fontSize: 16, marginBottom: 14 }}>Quick Actions</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 28 }}>
+        <div className="auto-grid" style={{ marginBottom: 28 }}>
           {[
             { icon: '📦', label: 'Manage Orders', sub: 'View & update', path: '/owner/orders', color: 'var(--blue)', bg: 'rgba(59,130,246,0.12)' },
             { icon: '🍽️', label: 'Menu Items', sub: 'Add/edit food', path: '/owner/menu', color: 'var(--green)', bg: 'var(--green-dim)' },
@@ -123,21 +98,19 @@ export default function OwnerDashboard() {
         {loading ? (
           Array(3).fill(0).map((_, i) => <div key={i} className="skeleton" style={{ height: 76, borderRadius: 12, marginBottom: 10 }} />)
         ) : recentOrders.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '30px 20px', color: 'var(--text-muted)', background: 'var(--bg-card)', borderRadius: 16, border: '1px solid var(--border)' }}>
+          <div className="glass-panel" style={{ textAlign: 'center', padding: '30px 20px', color: 'var(--text-muted)' }}>
             <p style={{ fontSize: 28, marginBottom: 8 }}>🎉</p>
             <p>No orders yet today. Menu is live!</p>
           </div>
         ) : recentOrders.map(order => {
           const meta = STATUS_META[order.status] || {};
           return (
-            <div key={order._id} onClick={() => navigate('/owner/orders')} style={{
-              background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12,
+            <div key={order._id} onClick={() => navigate('/owner/orders')} className="glass-panel" style={{
               padding: '12px 16px', marginBottom: 10, cursor: 'pointer',
               display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-              transition: 'all var(--transition)'
             }}
-            onMouseOver={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.background = 'var(--bg-elevated)'; }}
-            onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.background = 'var(--bg-card)'; }}
+            onMouseOver={e => { e.currentTarget.style.borderColor = 'var(--accent)'; }}
+            onMouseOut={e => { e.currentTarget.style.borderColor = ''; }}
             >
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -154,7 +127,6 @@ export default function OwnerDashboard() {
             </div>
           );
         })}
-      </div>
     </div>
   );
 }

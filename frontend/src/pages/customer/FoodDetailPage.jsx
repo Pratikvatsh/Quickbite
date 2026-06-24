@@ -148,7 +148,7 @@ export default function FoodDetailPage() {
       )}
 
       {/* ── CONTENT ── */}
-      <div style={{ padding: '16px 16px 0' }}>
+      <div className="container" style={{ padding: '16px 16px 0' }}>
 
         {/* Category + Title */}
         <div style={{ marginBottom: 14 }}>
@@ -310,37 +310,38 @@ export default function FoodDetailPage() {
         background: 'rgba(14,14,22,0.7)', backdropFilter: 'blur(28px)', WebkitBackdropFilter: 'blur(28px)',
         borderTop: '1px solid rgba(255,255,255,0.1)', padding: '12px 16px',
         boxShadow: '0 -4px 30px rgba(0,0,0,0.35)',
-        display: 'flex', alignItems: 'center', gap: 12
       }}>
-        <div style={{ flexShrink: 0 }}>
-          <div style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 600 }}>TOTAL</div>
-          <div style={{ fontSize: 22, fontWeight: 900, color: 'var(--accent)', lineHeight: 1.1 }}>
-            ₹{inCart ? item.price * cartItem.quantity : totalPrice}
+        <div className="container bar-inner" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ flexShrink: 0 }}>
+            <div style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 600 }}>TOTAL</div>
+            <div style={{ fontSize: 22, fontWeight: 900, color: 'var(--accent)', lineHeight: 1.1 }}>
+              ₹{inCart ? item.price * cartItem.quantity : totalPrice}
+            </div>
           </div>
+          {!inCart ? (
+            <button onClick={handleAdd} disabled={!item.isAvailable || adding} style={{
+              flex: 1, padding: '14px 0', borderRadius: 14,
+              background: item.isAvailable ? 'linear-gradient(135deg, #ff6b35, #ff3d00)' : 'var(--bg-elevated)',
+              color: item.isAvailable ? '#fff' : 'var(--text-muted)',
+              border: 'none', fontSize: 15, fontWeight: 800,
+              cursor: item.isAvailable ? 'pointer' : 'not-allowed',
+              boxShadow: item.isAvailable ? '0 4px 20px rgba(255,107,53,0.45)' : 'none',
+              transition: 'all 0.2s', letterSpacing: '0.02em'
+            }}>
+              {adding ? '⏳ Adding...' : `🛒 Add to Cart`}
+            </button>
+          ) : (
+            <button onClick={() => navigate('/cart')} style={{
+              flex: 1, padding: '14px 0', borderRadius: 14,
+              background: 'linear-gradient(135deg, #22c55e, #16a34a)',
+              color: '#fff', border: 'none', fontSize: 15, fontWeight: 800,
+              cursor: 'pointer', boxShadow: '0 4px 20px rgba(34,197,94,0.4)',
+              letterSpacing: '0.02em'
+            }}>
+              🛒 View Cart →
+            </button>
+          )}
         </div>
-        {!inCart ? (
-          <button onClick={handleAdd} disabled={!item.isAvailable || adding} style={{
-            flex: 1, padding: '14px 0', borderRadius: 14,
-            background: item.isAvailable ? 'linear-gradient(135deg, #ff6b35, #ff3d00)' : 'var(--bg-elevated)',
-            color: item.isAvailable ? '#fff' : 'var(--text-muted)',
-            border: 'none', fontSize: 15, fontWeight: 800,
-            cursor: item.isAvailable ? 'pointer' : 'not-allowed',
-            boxShadow: item.isAvailable ? '0 4px 20px rgba(255,107,53,0.45)' : 'none',
-            transition: 'all 0.2s', letterSpacing: '0.02em'
-          }}>
-            {adding ? '⏳ Adding...' : `🛒 Add to Cart`}
-          </button>
-        ) : (
-          <button onClick={() => navigate('/cart')} style={{
-            flex: 1, padding: '14px 0', borderRadius: 14,
-            background: 'linear-gradient(135deg, #22c55e, #16a34a)',
-            color: '#fff', border: 'none', fontSize: 15, fontWeight: 800,
-            cursor: 'pointer', boxShadow: '0 4px 20px rgba(34,197,94,0.4)',
-            letterSpacing: '0.02em'
-          }}>
-            🛒 View Cart →
-          </button>
-        )}
       </div>
     </div>
   );

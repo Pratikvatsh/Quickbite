@@ -52,26 +52,24 @@ export default function OwnerMenu() {
   const unavailableCount = items.filter(i => !i.isAvailable).length;
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', paddingBottom: 40 }}>
-      {/* Header */}
-      <div style={{ background: 'rgba(10,10,15,0.95)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--border)', padding: '16px 20px', position: 'sticky', top: 0, zIndex: 100 }}>
+    <div className="page page-with-nav container">
+      {/* Page controls */}
+      <div style={{ padding: '8px 16px 0' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 14 }}>
-          <button onClick={() => navigate('/owner/dashboard')} style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--bg-elevated)', border: '1px solid var(--border)', color: 'var(--text-primary)', fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>←</button>
           <div style={{ flex: 1 }}>
             <h2 style={{ fontSize: 20 }}>Menu Management</h2>
             <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>{availableCount} available · {unavailableCount} unavailable</p>
           </div>
-          <button onClick={() => navigate('/owner/menu/add')} className="btn btn-primary btn-sm">+ Add Item</button>
         </div>
 
         {/* Search */}
-        <div style={{ position: 'relative', marginBottom: 12 }}>
+        <div style={{ position: 'relative', marginBottom: 12, maxWidth: 480 }}>
           <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', fontSize: 15 }}>🔍</span>
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search items..." style={{ paddingLeft: 36, height: 42, borderRadius: 10 }} />
         </div>
 
         {/* Filter */}
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
           {[['all', 'All'], ['available', '✅ Available'], ['unavailable', '🔴 Unavailable']].map(([val, label]) => (
             <button key={val} onClick={() => setFilter(val)} style={{
               padding: '5px 12px', borderRadius: 999, fontSize: 12, fontWeight: 600,
@@ -84,7 +82,7 @@ export default function OwnerMenu() {
         </div>
       </div>
 
-      <div style={{ padding: '16px' }}>
+      <div style={{ padding: '0 16px' }}>
         {loading ? (
           Array(5).fill(0).map((_, i) => <div key={i} className="skeleton" style={{ height: 96, borderRadius: 14, marginBottom: 12 }} />)
         ) : filtered.length === 0 ? (
@@ -94,9 +92,9 @@ export default function OwnerMenu() {
             <button onClick={() => navigate('/owner/menu/add')} className="btn btn-primary btn-sm" style={{ marginTop: 16 }}>+ Add First Item</button>
           </div>
         ) : filtered.map(item => (
-          <div key={item._id} style={{
-            background: 'var(--bg-card)', border: `1px solid ${item.isAvailable ? 'var(--border)' : 'rgba(239,68,68,0.15)'}`,
-            borderRadius: 14, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 0, overflow: 'hidden',
+          <div key={item._id} className="glass-panel" style={{
+            borderColor: item.isAvailable ? undefined : 'rgba(239,68,68,0.25)',
+            marginBottom: 12, display: 'flex', alignItems: 'center', gap: 0, overflow: 'hidden',
             opacity: item.isAvailable ? 1 : 0.75, transition: 'all var(--transition)'
           }}>
             {/* Image */}

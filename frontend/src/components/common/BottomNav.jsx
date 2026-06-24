@@ -16,7 +16,7 @@ export default function BottomNav() {
   const { cartCount } = useCart();
 
   return (
-    <nav style={{
+    <nav className="bottom-nav-mobile" style={{
       position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 100,
       height: 72, display: 'flex', alignItems: 'center',
       background: 'rgba(10,10,15,0.7)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)',

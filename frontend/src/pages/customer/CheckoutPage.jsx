@@ -297,7 +297,7 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="page page-with-nav" style={{ padding: '16px 16px 100px' }}>
+    <div className="page page-with-nav container" style={{ padding: '16px 16px 100px' }}>
       <style>{`
         @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes progress { from { width: 0% } to { width: 100% } }
@@ -307,7 +307,7 @@ export default function CheckoutPage() {
       <h2 style={{ fontSize: 22, fontWeight: 800, marginBottom: 20 }}>Checkout</h2>
 
       {/* ── Your Details ── */}
-      <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 16, padding: 16, marginBottom: 14 }}>
+      <div className="glass-panel" style={{ padding: 16, marginBottom: 14 }}>
         <p style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Your Details</p>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           <div style={{ width: 46, height: 46, borderRadius: '50%', background: 'linear-gradient(135deg, var(--accent), #ff3d00)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800, fontSize: 18, flexShrink: 0 }}>
@@ -322,7 +322,7 @@ export default function CheckoutPage() {
       </div>
 
       {/* ── Order Summary ── */}
-      <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 16, padding: 16, marginBottom: 14 }}>
+      <div className="glass-panel" style={{ padding: 16, marginBottom: 14 }}>
         <p style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>Order Summary</p>
         {items.map(item => item.foodItem && (
           <div key={item.foodItem._id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, fontSize: 14 }}>
@@ -347,9 +347,10 @@ export default function CheckoutPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {METHODS.map(m => (
             <div key={m.id} onClick={() => setSelectedMethod(m.id)}
+              className="glass-panel"
               style={{
-                background: selectedMethod === m.id ? 'var(--accent-dim)' : 'var(--bg-card)',
-                border: `1.5px solid ${selectedMethod === m.id ? 'var(--accent)' : 'var(--border)'}`,
+                background: selectedMethod === m.id ? 'var(--accent-dim)' : undefined,
+                borderColor: selectedMethod === m.id ? 'var(--accent)' : undefined,
                 borderRadius: 14, padding: '13px 16px', cursor: 'pointer',
                 display: 'flex', alignItems: 'center', gap: 14, transition: 'all 0.2s'
               }}>
@@ -367,7 +368,7 @@ export default function CheckoutPage() {
       </div>
 
       {/* ── Special Instructions ── */}
-      <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14, padding: 16, marginBottom: 20 }}>
+      <div className="glass-panel" style={{ padding: 16, marginBottom: 20 }}>
         <p style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>Special Instructions</p>
         <textarea value={instructions} onChange={e => setInstructions(e.target.value)}
           placeholder="No onions, extra spicy, less oil..." rows={2}
@@ -375,8 +376,8 @@ export default function CheckoutPage() {
       </div>
 
       {/* ── Sticky Bottom CTA ── */}
-      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '12px 16px 24px', background: 'rgba(10,10,15,0.97)', backdropFilter: 'blur(20px)', borderTop: '1px solid var(--border)', zIndex: 100 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+      <div className="sticky-cta" style={{ padding: '12px 16px 24px', background: 'rgba(10,10,15,0.97)', backdropFilter: 'blur(20px)', borderTop: '1px solid var(--border)' }}>
+        <div className="bar-inner" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div style={{ flexShrink: 0 }}>
             <div style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 600 }}>TOTAL</div>
             <div style={{ fontSize: 20, fontWeight: 900, color: 'var(--accent)' }}>₹{cart.totalAmount}</div>

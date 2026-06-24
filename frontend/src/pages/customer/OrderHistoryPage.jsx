@@ -27,7 +27,7 @@ export default function OrderHistoryPage() {
   };
 
   if (loading) return (
-    <div className="page page-with-nav" style={{ padding: '20px 16px' }}>
+    <div className="page page-with-nav container" style={{ padding: '20px 16px' }}>
       {Array(4).fill(0).map((_, i) => (
         <div key={i} className="skeleton" style={{ height: 120, borderRadius: 16, marginBottom: 14 }} />
       ))}
@@ -35,7 +35,7 @@ export default function OrderHistoryPage() {
   );
 
   return (
-    <div className="page page-with-nav" style={{ padding: '20px 16px 100px' }}>
+    <div className="page page-with-nav container" style={{ padding: '20px 16px 100px' }}>
       <h2 style={{ fontSize: 22, marginBottom: 20 }}>Order History</h2>
 
       {orders.length === 0 ? (

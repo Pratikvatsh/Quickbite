@@ -80,16 +80,10 @@ export default function OwnerAddItem() {
   );
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', paddingBottom: 40 }}>
-      {/* Header */}
-      <div style={{ background: 'rgba(10,10,15,0.95)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--border)', padding: '16px 20px', position: 'sticky', top: 0, zIndex: 100 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-          <button onClick={() => navigate('/owner/menu')} style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--bg-elevated)', border: '1px solid var(--border)', color: 'var(--text-primary)', fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>←</button>
-          <h2 style={{ fontSize: 20 }}>{isEdit ? 'Edit Menu Item' : 'Add New Item'}</h2>
-        </div>
-      </div>
+    <div className="page page-with-nav container">
+      <h2 style={{ fontSize: 20, padding: '8px 20px 0' }}>{isEdit ? 'Edit Menu Item' : 'Add New Item'}</h2>
 
-      <form onSubmit={submit} style={{ padding: '24px 20px', display: 'flex', flexDirection: 'column', gap: 20, maxWidth: 600, margin: '0 auto' }}>
+      <form onSubmit={submit} style={{ padding: '20px 20px 40px', display: 'flex', flexDirection: 'column', gap: 20, maxWidth: 600, margin: '0 auto' }}>
 
         {/* Image preview */}
         {form.imageUrl && (

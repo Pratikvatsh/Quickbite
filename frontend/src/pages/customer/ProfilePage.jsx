@@ -47,7 +47,7 @@ export default function ProfilePage() {
   const avatarLetter = user?.name?.charAt(0).toUpperCase();
 
   return (
-    <div className="page page-with-nav" style={{ padding: '20px 16px 100px' }}>
+    <div className="page page-with-nav container" style={{ padding: '20px 16px 100px', maxWidth: 640 }}>
 
       {/* Avatar header */}
       <div style={{ textAlign: 'center', marginBottom: 28 }}>
@@ -66,7 +66,7 @@ export default function ProfilePage() {
       </div>
 
       {/* Profile card */}
-      <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 18, padding: 20, marginBottom: 16 }}>
+      <div className="glass-panel" style={{ padding: 20, marginBottom: 16 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
           <h3 style={{ fontSize: 16 }}>Personal Info</h3>
           <button onClick={() => setEditing(!editing)} style={{
@@ -116,7 +116,7 @@ export default function ProfilePage() {
       </div>
 
       {/* Change password */}
-      <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 18, padding: 20, marginBottom: 16 }}>
+      <div className="glass-panel" style={{ padding: 20, marginBottom: 16 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h3 style={{ fontSize: 16 }}>🔒 Change Password</h3>
           <button onClick={() => setShowPw(!showPw)} style={{
@@ -144,7 +144,7 @@ export default function ProfilePage() {
       </div>
 
       {/* Quick links */}
-      <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 18, padding: 8, marginBottom: 16 }}>
+      <div className="glass-panel" style={{ padding: 8, marginBottom: 16 }}>
         {[
           { icon: '📋', label: 'My Orders', sub: 'View order history', action: () => navigate('/orders') },
           { icon: '🍽️', label: 'Menu', sub: 'Browse canteen menu', action: () => navigate('/menu') },

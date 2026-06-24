@@ -34,7 +34,7 @@ export default function OrderConfirmPage() {
   const isPaid = payWithCard || payWithUPI || payWithWallet;
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', paddingBottom: 40, position: 'relative', overflow: 'hidden' }}>
+    <div className="page-with-nav" style={{ minHeight: '100vh', background: 'var(--bg-primary)', paddingBottom: 40, position: 'relative', overflow: 'hidden' }}>
       <style>{`
         @keyframes confettiFall {
           0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
@@ -68,26 +68,27 @@ export default function OrderConfirmPage() {
 
       {/* Header gradient */}
       <div style={{ background: 'linear-gradient(180deg, rgba(34,197,94,0.12) 0%, transparent 100%)', padding: '48px 16px 32px', textAlign: 'center' }}>
+        <div className="container">
+          {/* Big checkmark */}
+          <div style={{
+            width: 110, height: 110, borderRadius: '50%',
+            background: 'linear-gradient(135deg, #22c55e, #16a34a)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 52, margin: '0 auto 20px',
+            animation: 'scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, glow 2s 0.8s ease infinite',
+            boxShadow: '0 8px 32px rgba(34,197,94,0.4)'
+          }}>✅</div>
 
-        {/* Big checkmark */}
-        <div style={{
-          width: 110, height: 110, borderRadius: '50%',
-          background: 'linear-gradient(135deg, #22c55e, #16a34a)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 52, margin: '0 auto 20px',
-          animation: 'scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, glow 2s 0.8s ease infinite',
-          boxShadow: '0 8px 32px rgba(34,197,94,0.4)'
-        }}>✅</div>
-
-        <h1 style={{ fontSize: 30, fontWeight: 900, marginBottom: 6, animation: 'slideUp 0.5s 0.3s both' }}>
-          Order Confirmed! 🎉
-        </h1>
-        <p style={{ color: 'var(--text-secondary)', fontSize: 15, animation: 'slideUp 0.5s 0.4s both' }}>
-          {isPaid ? 'Paid & confirmed! Your food is being prepared.' : 'Your order has been sent to the canteen.'}
-        </p>
+          <h1 style={{ fontSize: 30, fontWeight: 900, marginBottom: 6, animation: 'slideUp 0.5s 0.3s both' }}>
+            Order Confirmed! 🎉
+          </h1>
+          <p style={{ color: 'var(--text-secondary)', fontSize: 15, animation: 'slideUp 0.5s 0.4s both' }}>
+            {isPaid ? 'Paid & confirmed! Your food is being prepared.' : 'Your order has been sent to the canteen.'}
+          </p>
+        </div>
       </div>
 
-      <div style={{ padding: '0 16px' }}>
+      <div className="container" style={{ padding: '0 16px' }}>
 
         {/* Order Number Card */}
         <div style={{
@@ -105,12 +106,12 @@ export default function OrderConfirmPage() {
 
         {/* Status + Time */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 16, animation: 'slideUp 0.5s 0.6s both' }}>
-          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14, padding: '14px 12px', textAlign: 'center' }}>
+          <div className="glass-panel" style={{ padding: '14px 12px', textAlign: 'center' }}>
             <div style={{ fontSize: 26, marginBottom: 4 }}>⏱</div>
             <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--text-primary)' }}>{order.estimatedTime}</div>
             <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>MINUTES EST.</div>
           </div>
-          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14, padding: '14px 12px', textAlign: 'center' }}>
+          <div className="glass-panel" style={{ padding: '14px 12px', textAlign: 'center' }}>
             <div style={{ fontSize: 26, marginBottom: 4 }}>{isPaid ? '💳' : '💵'}</div>
             <div style={{ fontSize: 14, fontWeight: 800, color: isPaid ? 'var(--green)' : 'var(--accent)' }}>{isPaid ? 'PAID' : 'PAY AT COUNTER'}</div>
             <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>₹{order.totalAmount}</div>
@@ -139,7 +140,7 @@ export default function OrderConfirmPage() {
         </div>
 
         {/* Items */}
-        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 16, padding: 16, marginBottom: 16, animation: 'slideUp 0.5s 0.8s both' }}>
+        <div className="glass-panel" style={{ padding: 16, marginBottom: 16, animation: 'slideUp 0.5s 0.8s both' }}>
           <p style={{ fontWeight: 700, fontSize: 15, marginBottom: 14 }}>🍽️ Your Order</p>
           {order.items.map((item, i) => (
             <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 14, marginBottom: 10 }}>
@@ -159,7 +160,7 @@ export default function OrderConfirmPage() {
         </div>
 
         {/* Live Order Progress */}
-        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 16, padding: 16, marginBottom: 24, animation: 'slideUp 0.5s 0.9s both' }}>
+        <div className="glass-panel" style={{ padding: 16, marginBottom: 24, animation: 'slideUp 0.5s 0.9s both' }}>
           <p style={{ fontWeight: 700, fontSize: 14, marginBottom: 16 }}>📍 Order Progress</p>
           {[
             { label: 'Order Placed', done: true, icon: '✅' },

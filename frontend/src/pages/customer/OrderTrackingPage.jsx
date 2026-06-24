@@ -51,7 +51,7 @@ export default function OrderTrackingPage() {
   }[order.status] || 'var(--accent)';
 
   return (
-    <div className="page page-with-nav" style={{ padding: '20px 16px 100px' }}>
+    <div className="page page-with-nav container" style={{ padding: '20px 16px 100px' }}>
       {/* Header */}
       <div style={{ textAlign: 'center', marginBottom: 28 }}>
         <p style={{ color: 'var(--text-muted)', fontSize: 13, marginBottom: 4 }}>Order Number</p>

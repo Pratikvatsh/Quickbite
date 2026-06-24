@@ -61,11 +61,10 @@ export default function OwnerOrders() {
   const activeCount = orders.filter(o => ['placed', 'preparing'].includes(o.status)).length;
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', paddingBottom: 40 }}>
-      {/* Header */}
-      <div style={{ background: 'rgba(10,10,15,0.95)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--border)', padding: '16px 20px', position: 'sticky', top: 0, zIndex: 100 }}>
+    <div className="page page-with-nav container">
+      {/* Page controls */}
+      <div style={{ padding: '8px 16px 0' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 14 }}>
-          <button onClick={() => navigate('/owner/dashboard')} style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--bg-elevated)', border: '1px solid var(--border)', color: 'var(--text-primary)', fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>←</button>
           <div>
             <h2 style={{ fontSize: 20 }}>Order Management</h2>
             {activeCount > 0 && <p style={{ fontSize: 12, color: 'var(--accent)', fontWeight: 600 }}>{activeCount} active orders need attention</p>}
@@ -74,11 +73,11 @@ export default function OwnerOrders() {
         </div>
 
         {/* Filter tabs */}
-        <div style={{ display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none' }}>
+        <div style={{ display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none', marginBottom: 16 }}>
           {FILTERS.map(f => (
             <button key={f} onClick={() => setFilter(f)} style={{
               padding: '6px 14px', borderRadius: 999, fontSize: 13, fontWeight: 600,
-              whiteSpace: 'nowrap', border: '1.5px solid', transition: 'all var(--transition)',
+              whiteSpace: 'nowrap', border: '1.5px solid', transition: 'all var(--transition)', flexShrink: 0,
               borderColor: filter === f ? 'var(--accent)' : 'var(--border)',
               background: filter === f ? 'var(--accent-dim)' : 'transparent',
               color: filter === f ? 'var(--accent)' : 'var(--text-muted)',
@@ -89,7 +88,7 @@ export default function OwnerOrders() {
         </div>
       </div>
 
-      <div style={{ padding: '20px 16px' }}>
+      <div style={{ padding: '0 16px' }}>
         {loading ? (
           Array(4).fill(0).map((_, i) => <div key={i} className="skeleton" style={{ height: 180, borderRadius: 16, marginBottom: 14 }} />)
         ) : orders.length === 0 ? (
@@ -104,11 +103,12 @@ export default function OwnerOrders() {
           const isActive = ['placed', 'preparing'].includes(order.status);
 
           return (
-            <div key={order._id} style={{
-              background: 'var(--bg-card)', borderRadius: 18, marginBottom: 16,
-              border: `1.5px solid ${isActive ? 'var(--border-accent)' : 'var(--border)'}`,
+            <div key={order._id} className="glass-panel" style={{
+              borderRadius: 18, marginBottom: 16,
+              borderWidth: isActive ? 1.5 : 1,
+              borderColor: isActive ? 'var(--border-accent)' : undefined,
               overflow: 'hidden',
-              boxShadow: isActive ? '0 4px 20px rgba(255,107,53,0.08)' : 'none'
+              boxShadow: isActive ? '0 4px 20px rgba(255,107,53,0.08)' : undefined
             }}>
               {/* Card header */}
               <div style={{ padding: '14px 16px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

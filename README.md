@@ -1,234 +1,177 @@
-# 🍔 QuickBite — College Canteen Food Ordering System
+# QuickBite
 
-> A full-stack food ordering app for college campuses. Dark-themed, mobile-first, Swiggy-inspired UI.
+QuickBite is a full-stack food ordering system built for college canteens. Students browse the day's menu, order ahead from their phone or laptop, and pick up without standing in the lunch-rush queue. Canteen staff get a live dashboard to accept, prepare, and mark orders ready, instead of running everything off a notebook and shouted order numbers.
 
----
+It's a two-sided app — one experience for students placing orders, another for the canteen owner managing them — backed by a single REST API.
 
-## 🗂 Project Structure
+## Screenshots
+
+<table>
+  <tr>
+    <td><img src="screenshots/login.png" width="400" alt="Login screen" /></td>
+    <td><img src="screenshots/home.png" width="400" alt="Student home feed" /></td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/menu.png" width="400" alt="Menu browsing grid" /></td>
+    <td><img src="screenshots/owner-dashboard.png" width="400" alt="Owner dashboard" /></td>
+  </tr>
+</table>
+
+## Why it's structured this way
+
+A canteen app really has two different jobs to do: a *catalog + checkout* flow for students, and an *operations* view for whoever is cooking. Rather than bolt both onto one generic dashboard, the app splits cleanly by role at login and route level — `customer` and `owner` get entirely different navigation, pages, and permitted API actions. A student can't hit an owner-only endpoint even if they guess the URL; the JWT carries the role and every owner route checks it server-side, not just in the UI.
+
+The other deliberate choice was payment: real campus canteens in India run on cash or UPI-at-the-counter, not card-on-file. So checkout defaults to "pay at the counter," and the UPI/card/wallet options in the UI are there to demonstrate the flow end-to-end (QR code rendering, card input formatting, a processing/success sequence) without wiring up a real payment gateway — there's no Razorpay/Stripe key anywhere in this repo, by design.
+
+## Tech stack
+
+| Layer | Choice |
+|---|---|
+| Frontend | React 18, React Router v6, Axios, react-hot-toast |
+| Styling | Hand-written CSS (custom properties, no Tailwind/MUI) |
+| Backend | Node.js, Express |
+| Database | MongoDB via Mongoose |
+| Auth | JWT (7-day expiry) + bcrypt password hashing |
+
+No CSS framework is used on the frontend — the dark, glassy look (backdrop blur, soft borders, spring-eased transitions) is a small design system defined once in `index.css` as CSS variables and utility classes (`.glass-panel`, `.card`, `.btn`, `.food-grid`, …), then reused across every page. The layout is responsive: a five-tab bottom bar on mobile, a top nav with inline links on desktop, and a `.container` max-width so pages don't stretch into a single wall of whitespace on a wide monitor.
+
+## Features
+
+**Student**
+- Browse the menu by category, search by name, filter to veg-only
+- Item detail page with ratings, prep time, calories, and related items
+- Cart with live quantity edits and a running bill summary
+- Checkout with special instructions and a choice of payment method
+- Order confirmation, then live tracking that polls for status updates
+- Order history and an editable profile (name, phone, college ID, password)
+
+**Canteen owner**
+- Dashboard with today's order count, active orders, and revenue
+- Order queue with status filters and one-tap status transitions (placed → preparing → ready → completed), plus cancellation
+- Menu management: add/edit items, toggle availability on or off, delete
+- A push-style notification lands in the student's bell the moment their order is marked ready
+
+## Project structure
 
 ```
-quickbite/
-├── backend/                  # Node.js + Express API
+SEPM/
+├── backend/
 │   ├── middleware/
-│   │   └── auth.js           # JWT auth + role guards
+│   │   └── auth.js            # JWT verification + owner-only guard
 │   ├── models/
-│   │   ├── User.js           # Users (customer / owner)
-│   │   ├── FoodItem.js       # Menu items
-│   │   ├── Category.js       # Food categories
-│   │   ├── Cart.js           # Per-user cart
-│   │   └── Order.js          # Orders with status history
+│   │   ├── User.js            # customer / owner accounts + notifications
+│   │   ├── FoodItem.js        # menu items
+│   │   ├── Category.js
+│   │   ├── Cart.js
+│   │   └── Order.js           # snapshot of items at order time + status history
 │   ├── routes/
-│   │   ├── auth.js           # /api/auth — login, register, me
-│   │   ├── menu.js           # /api/menu — CRUD + availability
-│   │   ├── cart.js           # /api/cart — add, update, remove, clear
-│   │   ├── orders.js         # /api/orders — place, track, update status
-│   │   ├── categories.js     # /api/categories
-│   │   └── users.js          # /api/users — profile, password, notifications
-│   ├── server.js             # Express entry point
-│   ├── seed.js               # Seed demo data
-│   ├── .env                  # Environment variables
-│   └── package.json
+│   │   ├── auth.js            # register, login, me
+│   │   ├── menu.js            # menu CRUD + availability toggle
+│   │   ├── categories.js
+│   │   ├── cart.js
+│   │   ├── orders.js          # place, track, list, update status, dashboard stats
+│   │   └── users.js           # profile, password, notifications
+│   ├── seed.js                 # demo data: categories, users, 35 food items
+│   └── server.js
 │
-└── frontend/                 # React app (CRA)
+└── frontend/
     └── src/
         ├── context/
-        │   ├── AuthContext.jsx   # Global auth state + JWT
-        │   └── CartContext.jsx   # Global cart state
-        ├── utils/
-        │   └── api.js            # Axios instance with auth header
+        │   ├── AuthContext.jsx     # JWT session state
+        │   └── CartContext.jsx     # cart state shared across pages
         ├── components/common/
-        │   ├── TopNav.jsx        # Top nav with cart + notifications
-        │   ├── BottomNav.jsx     # Mobile bottom tab bar
-        │   └── FoodCard.jsx      # Reusable food item card
+        │   ├── TopNav.jsx          # desktop nav links + cart/notifications/avatar
+        │   ├── BottomNav.jsx       # mobile-only tab bar
+        │   └── FoodCard.jsx
         ├── pages/
-        │   ├── SplashScreen.jsx
-        │   ├── LoginPage.jsx     # Login + Signup with role selector
-        │   ├── customer/
-        │   │   ├── HomePage.jsx          # Search, categories, featured
-        │   │   ├── MenuPage.jsx          # Browse + filter + search
-        │   │   ├── FoodDetailPage.jsx    # Item detail + add to cart
-        │   │   ├── CartPage.jsx          # Cart management
-        │   │   ├── CheckoutPage.jsx      # Review + special instructions
-        │   │   ├── OrderConfirmPage.jsx  # Order placed confirmation
-        │   │   ├── OrderTrackingPage.jsx # Live order status tracker
-        │   │   ├── OrderHistoryPage.jsx  # Past orders
-        │   │   └── ProfilePage.jsx       # Edit profile + password
-        │   └── owner/
-        │       ├── OwnerDashboard.jsx    # Stats + quick actions
-        │       ├── OwnerOrders.jsx       # Manage all orders + update status
-        │       ├── OwnerMenu.jsx         # Menu item list + availability toggle
-        │       └── OwnerAddItem.jsx      # Add / Edit food items
-        ├── App.js             # Routes + role-based guards
-        ├── index.js
-        └── index.css          # Dark theme design system
+        │   ├── SplashScreen.jsx, LoginPage.jsx
+        │   ├── customer/           # Home, Menu, FoodDetail, Cart, Checkout,
+        │   │                       # OrderConfirm, OrderTracking, OrderHistory, Profile
+        │   └── owner/              # Dashboard, Orders, Menu, AddItem
+        ├── utils/api.js            # Axios instance, attaches JWT to every request
+        └── index.css               # design system: variables, glass/card/button classes
 ```
 
----
+## Running it locally
 
-## ⚡ Quick Start
-
-### Prerequisites
-- Node.js ≥ 18
-- MongoDB running locally (or a MongoDB Atlas URI)
-
----
-
-### 1. Clone & Setup Backend
+You'll need Node 18+. MongoDB is optional — if `MONGO_URI` points at `localhost` (the default), the server spins up an in-memory MongoDB instance and seeds it automatically on boot, so you can clone and run without installing Mongo at all. Point `MONGO_URI` at a real instance (local or Atlas) if you want data to persist across restarts.
 
 ```bash
-cd quickbite/backend
+# backend
+cd backend
 npm install
-```
+npm run dev          # nodemon, http://localhost:5000
 
-Edit `.env` if needed:
-```
-PORT=5000
-MONGO_URI=mongodb://localhost:27017/quickbite
-JWT_SECRET=quickbite_super_secret_jwt_key_2024
-```
-
-Seed the database with demo data:
-```bash
-npm run seed
-```
-
-Start the backend:
-```bash
-npm run dev        # development (nodemon)
-# or
-npm start          # production
-```
-
-Backend runs at: `http://localhost:5000`
-
----
-
-### 2. Setup Frontend
-
-```bash
-cd quickbite/frontend
+# frontend, in a second terminal
+cd frontend
 npm install
-npm start
+npm start             # http://localhost:3000
 ```
 
-Frontend runs at: `http://localhost:3000`
+The frontend's `package.json` proxies `/api` to port 5000, so there's no CORS config to fight with in development.
 
-The `proxy` in `package.json` forwards `/api` calls to `localhost:5000`.
+### Demo accounts
 
----
+Seeded automatically — log in as either:
 
-## 🔐 Demo Login Credentials
+| Role | Email | Password |
+|---|---|---|
+| Student | `student@quickbite.com` | `password123` |
+| Canteen owner | `owner@quickbite.com` | `password123` |
 
-| Role       | Email                    | Password     |
-|------------|--------------------------|--------------|
-| 👨‍🍳 Owner   | owner@quickbite.com      | password123  |
-| 🎓 Student | student@quickbite.com    | password123  |
+## API reference
 
----
+All routes are mounted under `/api`. Routes marked **owner** require a JWT for a user with `role: "owner"`; everything else marked **auth** just needs a valid token.
 
-## ✅ Feature Checklist
+**Auth** — `/auth`
+| Method | Path | |
+|---|---|---|
+| POST | `/register` | create account |
+| POST | `/login` | returns JWT |
+| GET | `/me` | current user *(auth)* |
 
-### Customer (Student)
-- [x] Register & login with role selection
-- [x] Splash screen
-- [x] Home page with search, categories, featured items
-- [x] Browse full menu with category filter
-- [x] Veg-only filter
-- [x] Search food items
-- [x] Food detail page with ratings, prep time, calories
-- [x] Add to cart / modify quantities
-- [x] Cart page with bill summary
-- [x] Checkout with special instructions
-- [x] Cash on Pickup payment (no online payment)
-- [x] Order confirmation with order number
-- [x] Live order tracking (polls every 10 seconds)
-- [x] Order history
-- [x] Push notification when order is ready
-- [x] Edit profile (name, phone, college ID)
-- [x] Change password
+**Menu** — `/menu`
+| Method | Path | |
+|---|---|---|
+| GET | `/` | list items, supports `?category=`, `?search=`, `?available=true` |
+| GET | `/:id` | single item |
+| POST | `/` | create *(owner)* |
+| PUT | `/:id` | update *(owner)* |
+| PATCH | `/:id/availability` | flip available/unavailable *(owner)* |
+| DELETE | `/:id` | *(owner)* |
 
-### Shop Owner
-- [x] Owner login dashboard
-- [x] Stats: total orders, today's orders, active orders, revenue
-- [x] View all incoming orders (auto-refreshes every 12 seconds)
-- [x] Filter orders by status
-- [x] Update order status: Placed → Preparing → Ready → Completed
-- [x] Cancel orders
-- [x] Manage menu (view all items)
-- [x] Toggle item availability (Live / Off)
-- [x] Add new food items
-- [x] Edit existing food items
-- [x] Delete food items
-- [x] Special instructions shown on order cards
+**Cart** — `/cart` *(all auth)*
+| Method | Path | |
+|---|---|---|
+| GET | `/` | current user's cart |
+| POST | `/add` | `{ foodItemId, quantity }` |
+| PUT | `/update` | `{ foodItemId, quantity }` |
+| DELETE | `/remove/:id` | |
+| DELETE | `/clear` | |
 
----
+**Orders** — `/orders`
+| Method | Path | |
+|---|---|---|
+| POST | `/` | place order from cart *(auth)* |
+| GET | `/my-orders` | the logged-in student's orders *(auth)* |
+| GET | `/:id` | single order *(auth, owner or the order's customer)* |
+| GET | `/` | all orders, `?status=` filter *(owner)* |
+| GET | `/stats/dashboard` | totals for the owner dashboard *(owner)* |
+| PATCH | `/:id/status` | advance or cancel an order *(owner)* |
 
-## 🛠 API Reference
+**Users** — `/users` *(all auth)*
+| Method | Path | |
+|---|---|---|
+| GET / PUT | `/profile` | |
+| PUT | `/password` | |
+| GET | `/notifications` | |
+| PUT | `/notifications/read` | mark all read |
 
-### Auth
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/register` | Register new user |
-| POST | `/api/auth/login` | Login + get JWT |
-| GET | `/api/auth/me` | Get current user |
+## What's not here
 
-### Menu
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/menu` | Get all items (with filters) |
-| GET | `/api/menu/:id` | Get single item |
-| POST | `/api/menu` | Add item (owner) |
-| PUT | `/api/menu/:id` | Edit item (owner) |
-| PATCH | `/api/menu/:id/availability` | Toggle availability (owner) |
-| DELETE | `/api/menu/:id` | Delete item (owner) |
+This is a working demo, not a production deployment — a few things are intentionally out of scope:
 
-### Cart
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/cart` | Get cart |
-| POST | `/api/cart/add` | Add item |
-| PUT | `/api/cart/update` | Update quantity |
-| DELETE | `/api/cart/remove/:id` | Remove item |
-| DELETE | `/api/cart/clear` | Clear cart |
-
-### Orders
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/orders` | Place order |
-| GET | `/api/orders/my` | Customer's orders |
-| GET | `/api/orders/all` | All orders (owner) |
-| GET | `/api/orders/:id` | Single order |
-| PATCH | `/api/orders/:id/status` | Update status (owner) |
-| GET | `/api/orders/stats/dashboard` | Stats (owner) |
-
----
-
-## 🎨 Design System
-
-The UI is built using pure CSS variables (no Tailwind dependency needed):
-
-- **Fonts**: Syne (display) + DM Sans (body) — loaded from Google Fonts
-- **Colors**: `--accent: #ff6b35` (orange), dark backgrounds `#0a0a0f / #111118 / #16161f`
-- **Radius**: 8px / 14px / 20px / 999px (pill)
-- **Animations**: fadeIn, slideUp, bounce, glow, shimmer (skeleton)
-
----
-
-## 🔄 Order Status Flow
-
-```
-Placed ──▶ Preparing ──▶ Ready ──▶ Completed
-   └──────────────────────────────▶ Cancelled
-```
-
-When status changes to **Ready**, a notification is pushed to the customer's notification bell.
-
----
-
-## 📝 Notes
-
-- No online payment is implemented — all orders use **Cash on Pickup**
-- Order tracking **auto-polls every 10 seconds** for live status
-- Owner dashboard **auto-refreshes every 12–15 seconds**
-- JWT tokens stored in `localStorage` (standard for college projects)
-- Images use Unsplash URLs — internet connection required for images
+- No real payment gateway. The UPI/card/wallet screens are a believable simulation, not a Razorpay/Stripe integration.
+- No websockets. Order tracking and the owner dashboard update by polling (every 10–15s), not push.
+- JWT lives in `localStorage`, which is fine for a project like this but isn't what you'd want against XSS in a real production app.
+- Menu images are plain URLs (mostly Unsplash) rather than uploaded/stored assets, so the app needs internet access to render them.

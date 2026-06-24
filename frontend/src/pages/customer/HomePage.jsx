@@ -63,34 +63,36 @@ export default function HomePage() {
         padding: '28px 16px 24px',
         background: 'linear-gradient(160deg, rgba(255,107,53,0.1) 0%, transparent 60%)'
       }}>
-        <p style={{ color: 'var(--text-muted)', fontSize: 13, marginBottom: 4 }}>Good {getGreeting()} 👋</p>
-        <h1 style={{ fontSize: 26, marginBottom: 20, lineHeight: 1.2 }}>
-          Hey <span style={{ color: 'var(--accent)' }}>{firstName}</span>,<br />
-          What are you craving?
-        </h1>
+        <div className="container">
+          <p style={{ color: 'var(--text-muted)', fontSize: 13, marginBottom: 4 }}>Good {getGreeting()} 👋</p>
+          <h1 style={{ fontSize: 26, marginBottom: 20, lineHeight: 1.2 }}>
+            Hey <span style={{ color: 'var(--accent)' }}>{firstName}</span>,<br />
+            What are you craving?
+          </h1>
 
-        {/* Search bar */}
-        <form onSubmit={handleSearch}>
-          <div style={{ position: 'relative' }}>
-            <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', fontSize: 18 }}>🔍</span>
-            <input
-              value={search} onChange={e => setSearch(e.target.value)}
-              placeholder="Search food, snacks, beverages..."
-              style={{ paddingLeft: 44, borderRadius: 14, height: 50, fontSize: 15 }}
-            />
-            {search && (
-              <button type="submit" style={{
-                position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
-                background: 'var(--accent)', color: '#fff', border: 'none',
-                padding: '6px 14px', borderRadius: 8, fontWeight: 600, fontSize: 13
-              }}>Go</button>
-            )}
-          </div>
-        </form>
+          {/* Search bar */}
+          <form onSubmit={handleSearch}>
+            <div style={{ position: 'relative', maxWidth: 480 }}>
+              <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', fontSize: 18 }}>🔍</span>
+              <input
+                value={search} onChange={e => setSearch(e.target.value)}
+                placeholder="Search food, snacks, beverages..."
+                style={{ paddingLeft: 44, borderRadius: 14, height: 50, fontSize: 15 }}
+              />
+              {search && (
+                <button type="submit" style={{
+                  position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
+                  background: 'var(--accent)', color: '#fff', border: 'none',
+                  padding: '6px 14px', borderRadius: 8, fontWeight: 600, fontSize: 13
+                }}>Go</button>
+              )}
+            </div>
+          </form>
+        </div>
       </div>
 
       {/* Categories */}
-      <div style={{ padding: '0 16px', marginBottom: 28 }}>
+      <div className="container" style={{ padding: '0 16px', marginBottom: 28 }}>
         <div className="section-header">
           <h2 style={{ fontSize: 18 }}>Categories</h2>
           <button onClick={() => navigate('/menu')} style={{ background: 'none', border: 'none', color: 'var(--accent)', fontSize: 13, fontWeight: 600 }}>See all →</button>
@@ -104,10 +106,10 @@ export default function HomePage() {
               justifyContent: 'center', gap: 6, padding: '12px 8px',
               background: 'rgba(22,22,31,0.5)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)',
               border: '1px solid rgba(255,255,255,0.1)',
-              borderRadius: 14, cursor: 'pointer', transition: 'all var(--transition)'
+              borderRadius: 14, cursor: 'pointer', transition: 'all var(--transition)', flexShrink: 0
             }}
-            onMouseOver={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.background = 'var(--accent-dim)'; }}
-            onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.background = 'var(--bg-card)'; }}
+            onMouseOver={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.background = 'var(--accent-dim)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+            onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.background = 'var(--bg-card)'; e.currentTarget.style.transform = 'none'; }}
             >
               <span style={{ fontSize: 26 }}>{cat.icon}</span>
               <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center', lineHeight: 1.2 }}>{cat.name}</span>
@@ -117,10 +119,10 @@ export default function HomePage() {
       </div>
 
       {/* Promo banner */}
-      <div style={{ margin: '0 16px 28px' }}>
-        <div style={{
+      <div className="container" style={{ padding: '0 16px', marginBottom: 28 }}>
+        <div className="glass-panel" style={{
           background: 'linear-gradient(135deg, rgba(255,107,53,0.2), rgba(255,61,0,0.1))',
-          border: '1px solid var(--border-accent)', borderRadius: 18,
+          borderColor: 'var(--border-accent)', borderRadius: 18,
           padding: '20px 20px', display: 'flex', alignItems: 'center', gap: 16,
           position: 'relative', overflow: 'hidden', cursor: 'pointer'
         }} onClick={() => navigate('/menu')}>
@@ -150,17 +152,17 @@ export default function HomePage() {
 function FoodSection({ title, items, loading, onMenu }) {
   if (!loading && items.length === 0) return null;
   return (
-    <div style={{ padding: '0 16px', marginBottom: 28, animation: 'cardPop 0.5s ease both' }}>
+    <div className="container" style={{ padding: '0 16px', marginBottom: 28, animation: 'cardPop 0.5s ease both' }}>
       <div className="section-header">
         <h2 style={{ fontSize: 18 }}>{title}</h2>
         <button onClick={onMenu} style={{ background: 'none', border: 'none', color: 'var(--accent)', fontSize: 13, fontWeight: 600 }}>See all →</button>
       </div>
       {loading ? (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
+        <div className="food-grid">
           {Array(3).fill(0).map((_, i) => <div key={i} className="skeleton" style={{ height: 200, borderRadius: 12 }} />)}
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
+        <div className="food-grid">
           {items.map((item, idx) => (
             <div key={item._id} style={{ animation: `cardPop 0.4s ${idx * 0.08}s ease both` }}>
               <FoodCard item={item} />

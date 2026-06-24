@@ -59,10 +59,7 @@ export default function LoginPage() {
         </div>
 
         {/* Card */}
-        <div style={{
-          background: 'var(--bg-card)', border: '1px solid var(--border)',
-          borderRadius: 20, padding: 28, boxShadow: 'var(--shadow-lg)'
-        }}>
+        <div className="glass-panel animate-scale" style={{ padding: 28, boxShadow: 'var(--shadow-lg), inset 0 1px 0 rgba(255,255,255,0.06)' }}>
           {/* Role selector */}
           <div style={{ marginBottom: 24 }}>
             <p style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>I am a</p>
